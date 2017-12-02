@@ -1,12 +1,30 @@
 var BinarySearchTree = function(value) {
   var someInstance = Object.create(BinarySearchTree.prototype);
   someInstance.value = value;
-  someInstance.left = [];
-  someInstance.right = [];
+  someInstance.left = undefined;
+  someInstance.right = undefined;
   return someInstance;  
 };
 
-BinarySearchTree.prototype.insert = function(node) {
+
+BinarySearchTree.prototype.insert = function(value) {
+  var newNode = BinarySearchTree(value);
+  console.log(this)
+  var current = this;
+  if (newNode.value < current.value) {
+    if (current.left === undefined) {
+      current.left = newNode;
+    } else {
+      current.left.insert(value);
+    }
+  }
+  if (newNode.value > current.value) {
+    if (current.right === undefined) {
+      current.right = newNode;
+    } else {
+      current.right.insert(value);
+    }
+  }
   
 };
 
@@ -17,32 +35,26 @@ BinarySearchTree.prototype.contains = function(target) {
 
   var checkNode = function(node) {  
     if (node.value === target) {
-      result = true;
-      return
+     return true;
     };
 
-    if (node.value > target) {
-    if (node.left.length) {
-      node.left.forEach(function(child) {
-        checkNode(child)
-      });
-    } else {
-        result = false;
+    if (target < node.value) {
+      if (node.left) {
+       return checkNode(node.left)
+      } 
+    } 
+    if (target > node.value){
+      if (node.right) {
+        return checkNode(node.right)
+      } 
     }
-  } else {
-      if (node.right.length) {
-        node.right.forEach(function(child) {
-          checkNode(child);
-        });
-      } else {
-          result = false;
-        }
-    }
+    return false
  };
  
- checkNode(topNode);
- return result ? true : false;
+    return checkNode(topNode)
+ 
 };
+
 
 
 
@@ -52,3 +64,4 @@ BinarySearchTree.prototype.contains = function(target) {
 BinarySearchTree.prototype.depthfirstLog = function (callback) {
 
 };
+
