@@ -23,18 +23,19 @@ Graph.prototype.contains = function(node) {
 };
 
 // Removes a node from the graph.
-Graph.prototype.removeNode = function(node) {
+Graph.prototype.removeNode = function(nodeVal) {
   var targetIndex;
-  this.nodes.forEach(function(n, index) {
-    if (n.value === node) {
+  this.nodes.forEach(function(node, index) {
+    if (node.value === nodeVal) {
       targetIndex = index;
     }
-  });
-  this.nodes.forEach(function(node) {
-    node.edges.forEach(function(edge, index) {
-      node.edges.splice(index, 1);
+    node.edges.forEach(function(edge, edgeIndex) {
+      if (edge === nodeVal) {
+        node.edges.splice(edgeIndex, 1);
+      }
     });
   });
+ 
   this.nodes.splice(targetIndex, 1);
 };
 
@@ -42,21 +43,20 @@ Graph.prototype.removeNode = function(node) {
 Graph.prototype.hasEdge = function(fromNode, toNode) {
   var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
   var toNodeIndex = this.findIndexesByValues(fromNode, toNode)[1];
-  if (fromNodeIndex === undefined) {
+
+  if (fromNodeIndex === undefined || toNodeIndex === undefined) {
     return false; 
   }
-  if (toNodeIndex === undefined) {
-    return false; 
-  }
+ 
   return this.nodes[fromNodeIndex].edges.includes(toNode) || this.nodes[toNodeIndex].edges.includes(fromNode);
 };
 
 // Connects two nodes in a graph by adding an edge between them.
 Graph.prototype.addEdge = function(fromNode, toNode) {
-  if (typeof fromNode === "object") {
+  if (typeof fromNode === 'object') {
     fromNode = fromNode.value;
   } 
-  if (typeof toNode === "object") {
+  if (typeof toNode === 'object') {
     toNode = toNode.value;
   }
   var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
