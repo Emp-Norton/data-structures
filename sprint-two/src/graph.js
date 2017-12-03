@@ -30,6 +30,11 @@ Graph.prototype.removeNode = function(node) {
       targetIndex = index;
     }
   });
+  this.nodes.forEach(function(node) {
+    node.edges.forEach(function(edge, index) {
+      node.edges.splice(index, 1);
+    });
+  });
   this.nodes.splice(targetIndex, 1);
 };
 
@@ -37,11 +42,23 @@ Graph.prototype.removeNode = function(node) {
 Graph.prototype.hasEdge = function(fromNode, toNode) {
   var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
   var toNodeIndex = this.findIndexesByValues(fromNode, toNode)[1];
+  if (fromNodeIndex === undefined) {
+    return false; 
+  }
+  if (toNodeIndex === undefined) {
+    return false; 
+  }
   return this.nodes[fromNodeIndex].edges.includes(toNode) || this.nodes[toNodeIndex].edges.includes(fromNode);
 };
 
 // Connects two nodes in a graph by adding an edge between them.
 Graph.prototype.addEdge = function(fromNode, toNode) {
+  if (typeof fromNode === "object") {
+    fromNode = fromNode.value;
+  } 
+  if (typeof toNode === "object") {
+    toNode = toNode.value;
+  }
   var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
   var toNodeIndex = this.findIndexesByValues(fromNode, toNode)[1];
   this.nodes[fromNodeIndex].edges.push(toNode);
@@ -49,32 +66,35 @@ Graph.prototype.addEdge = function(fromNode, toNode) {
 };
 
 Graph.prototype.removeEdge = function(fromNode, toNode) {
-var fromNodeIndex = this.findIndexesByValues(fromNode,toNode)[0]
-var toNodeIndex = this.findIndexesByValues(fromNode,toNode)[1]
+  var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
+  var toNodeIndex = this.findIndexesByValues(fromNode, toNode)[1];
 
-var toNode_delete;
-var fromNode_delete;
+  var toNode_delete;
+  var fromNode_delete;
 
-var edgesOfFromNode = this.nodes[fromNodeIndex].edges
-var edgesOfToNode = this.nodes[toNodeIndex].edges
-edgesOfFromNode.forEach(function(edge,index){
-  if (edge === toNode){
-   toNode_delete = index;
-  }
-})
-
-edgesOfToNode.forEach(function(edge,index){
-    if (edge ===fromNode){
-        fromNode_delete = index;
+  var edgesOfFromNode = this.nodes[fromNodeIndex].edges;
+  var edgesOfToNode = this.nodes[toNodeIndex].edges;
+  edgesOfFromNode.forEach(function(edge, index) {
+    if (edge === toNode) {
+      toNode_delete = index;
     }
-})
+  });
 
-edgesOfFromNode.splice(toNode_delete,1)
-edgesOfToNode.splice(fromNode_delete,1)
+  edgesOfToNode.forEach(function(edge, index) {
+    if (edge === fromNode) {
+      fromNode_delete = index;
+    }
+  });
+
+  edgesOfFromNode.splice(toNode_delete, 1);
+  edgesOfToNode.splice(fromNode_delete, 1);
 
 };
 
 Graph.prototype.forEachNode = function(cb) {
+  this.nodes.forEach(function(node) {
+    cb(node);
+  }); 
 };
 
 Graph.prototype.findIndexesByValues = function(fromNode, toNode) {
