@@ -69,25 +69,24 @@ Graph.prototype.removeEdge = function(fromNode, toNode) {
   var fromNodeIndex = this.findIndexesByValues(fromNode, toNode)[0];
   var toNodeIndex = this.findIndexesByValues(fromNode, toNode)[1];
 
-  var toNode_delete;
-  var fromNode_delete;
+  var toNodeDelete, fromNodeDelete;
 
   var edgesOfFromNode = this.nodes[fromNodeIndex].edges;
   var edgesOfToNode = this.nodes[toNodeIndex].edges;
   edgesOfFromNode.forEach(function(edge, index) {
     if (edge === toNode) {
-      toNode_delete = index;
+      toNodeDelete = index;
     }
   });
 
   edgesOfToNode.forEach(function(edge, index) {
     if (edge === fromNode) {
-      fromNode_delete = index;
+      fromNodeDelete = index;
     }
   });
 
-  edgesOfFromNode.splice(toNode_delete, 1);
-  edgesOfToNode.splice(fromNode_delete, 1);
+  edgesOfFromNode.splice(toNodeDelete, 1);
+  edgesOfToNode.splice(fromNodeDelete, 1);
 
 };
 
